@@ -101,6 +101,11 @@ static void generateSoundex(const char *name, char *soundex) {
         return;
     }
 
+    if (name[0] == '\0') { // Check for empty string
+        strcpy(soundex, "0000"); // Set to default Soundex code
+        return;
+    }
+    
     initializeSoundex(soundex, name[0]); // Initialize the Soundex with the first character
     processNameCharacters(name, soundex); // Process the rest of the name to complete the Soundex code
 }
