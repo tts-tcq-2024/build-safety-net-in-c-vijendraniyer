@@ -31,7 +31,8 @@ static void initializeSoundex(char *soundex, char firstChar);
 static int canAddCodeToSoundex(char code, const char *soundex, int sIndex);
 static void addCodeToSoundex(char *soundex, char code, int *sIndex);
 static void processCharacter(char c, char *soundex, int *sIndex);
-static void processName(const char *name, char *soundex);
+static void iterateCharacters(const char *name, char *soundex);
+static void processNameCharacters(const char *name, char *soundex);
 static void handleNullInputs(const char *name, char *soundex);
 static void generateSoundex(const char *name, char *soundex);
 
@@ -72,14 +73,18 @@ static void processCharacter(char c, char *soundex, int *sIndex) {
     addCodeToSoundex(soundex, code, sIndex);
 }
 
-// Process the name to generate the Soundex code
-static void processName(const char *name, char *soundex) {
-    if (name == NULL || soundex == NULL) return; // Handle NULL inputs
-
+// Iterate over the characters of the name and process them
+static void iterateCharacters(const char *name, char *soundex) {
     int sIndex = 1; // Index for the Soundex code
     for (int cIndex = 1; name[cIndex] && sIndex < SOUND_EX_LENGTH; cIndex++) {
         processCharacter(name[cIndex], soundex, &sIndex);
     }
+}
+
+// Process the name to generate the Soundex code
+static void processNameCharacters(const char *name, char *soundex) {
+    if (name == NULL || soundex == NULL) return; // Handle NULL inputs
+    iterateCharacters(name, soundex); // Iterate and process characters
 }
 
 // Handle NULL inputs for generateSoundex
@@ -97,7 +102,7 @@ static void generateSoundex(const char *name, char *soundex) {
     }
 
     initializeSoundex(soundex, name[0]); // Initialize the Soundex with the first character
-    processName(name, soundex); // Process the rest of the name to complete the Soundex code
+    processNameCharacters(name, soundex); // Process the rest of the name to complete the Soundex code
 }
 
 #endif // SOUNDEX_H
