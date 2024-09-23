@@ -28,10 +28,13 @@ static const SoundexMapping soundexTable[] = {
 // Function prototypes
 static char getSoundexCodeForCharacter(char c);
 static void initializeSoundex(char *soundex, char firstChar);
-static char addCodeToSoundex(char *soundex, char code, int *sIndex);
+static int canAddCodeToSoundex(char code, const char *soundex, int sIndex);
+static void addCodeToSoundex(char *soundex, char code, int *sIndex);
 static void processName(const char *name, char *soundex);
+static void handleNullInputs(const char *name, char *soundex);
 static void generateSoundex(const char *name, char *soundex);
 
+// Get the Soundex digit for a character
 static char getSoundexCodeForCharacter(char c) {
     c = toupper(c); // Convert character to uppercase
     for (int i = 0; i < sizeof(soundexTable) / sizeof(soundexTable[0]); i++) {
@@ -42,6 +45,7 @@ static char getSoundexCodeForCharacter(char c) {
     return '0'; // Return '0' for non-alphabetic characters
 }
 
+// Initialize the Soundex code with the first character of the name
 static void initializeSoundex(char *soundex, char firstChar) {
     if (soundex == NULL) return; // Ensure soundex is not NULL
     soundex[0] = toupper(firstChar); // Set the first character to uppercase
@@ -49,16 +53,19 @@ static void initializeSoundex(char *soundex, char firstChar) {
     soundex[SOUND_EX_LENGTH] = '\0'; // Null-terminate the string
 }
 
-// Helper function to add the Soundex code to the output
-static char addCodeToSoundex(char *soundex, char code, int *sIndex) {
-    if (code != '0' && code != soundex[*sIndex - 1]) {
-        soundex[(*sIndex)++] = code; // Add code and increment index
-        return 1; // Indicate success
-    }
-    return 0; // Indicate no addition
+// Determine if the code can be added to Soundex
+static int canAddCodeToSoundex(char code, const char *soundex, int sIndex) {
+    return code != '0' && (sIndex == 1 || code != soundex[sIndex - 1]);
 }
 
-// Refactored processName function
+// Add the Soundex code to the output
+static void addCodeToSoundex(char *soundex, char code, int *sIndex) {
+    if (canAddCodeToSoundex(code, soundex, *sIndex)) {
+        soundex[(*sIndex)++] = code; // Add code and increment index
+    }
+}
+
+// Process the name to generate the Soundex code
 static void processName(const char *name, char *soundex) {
     if (name == NULL || soundex == NULL) return; // Handle NULL inputs
 
@@ -69,11 +76,17 @@ static void processName(const char *name, char *soundex) {
     }
 }
 
+// Handle NULL inputs for generateSoundex
+static void handleNullInputs(const char *name, char *soundex) {
+    if (soundex != NULL) {
+        strcpy(soundex, "0000"); // Set default value if name is NULL
+    }
+}
+
+// Generate the Soundex code for a given name
 static void generateSoundex(const char *name, char *soundex) {
     if (name == NULL || soundex == NULL) {
-        if (soundex != NULL) {
-            strcpy(soundex, "0000"); // Set default value if name is NULL
-        }
+        handleNullInputs(name, soundex);
         return;
     }
 
