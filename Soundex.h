@@ -34,7 +34,6 @@ static void processCharacter(char c, char *soundex, int *sIndex);
 static void iterateCharacters(const char *name, char *soundex);
 static void processNameCharacters(const char *name, char *soundex);
 static void handleNullInputs(const char *name, char *soundex);
-static void checkForNullInputs(const char *name, char *soundex);
 static int checkForEmptyName(const char *name, char *soundex);
 static void mainSoundexGeneration(const char *name, char *soundex);
 static int validateInputs(const char *name, char *soundex);
@@ -110,7 +109,7 @@ static int checkForEmptyName(const char *name, char *soundex) {
 // Validate inputs
 static int validateInputs(const char *name, char *soundex) {
     if (name == NULL || soundex == NULL) {
-        checkForNullInputs(name, soundex);
+        handleNullInputs(name, soundex);
         return 1; // Indicates invalid inputs
     }
     return 0; // Inputs are valid
