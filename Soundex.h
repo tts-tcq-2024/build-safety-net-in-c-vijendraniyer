@@ -31,6 +31,10 @@ static void initializeSoundex(char *soundex, char firstChar);
 static int canAddCodeToSoundex(char code, const char *soundex, int sIndex);
 static void addCodeToSoundex(char *soundex, char code, int *sIndex);
 static void processCharacter(char c, char *soundex, int *sIndex);
+static void validateInputs(const char *name, char *soundex);
+static void initializeIndex(int *sIndex);
+static void processCharacterAtIndex(const char *name, char *soundex, int *sIndex, int cIndex);
+static void processCharacters(const char *name, char *soundex, int *sIndex);
 static void processName(const char *name, char *soundex);
 static void handleNullInputs(char *soundex);
 static void generateSoundex(const char *name, char *soundex);
@@ -72,15 +76,36 @@ static void processCharacter(char c, char *soundex, int *sIndex) {
     addCodeToSoundex(soundex, code, sIndex);
 }
 
+// Validate inputs before processing the name
+static void validateInputs(const char *name, char *soundex) {
+    if (soundex == NULL || name == NULL) return; // Handle NULL inputs
+}
+
+// Initialize Soundex index
+static void initializeIndex(int *sIndex) {
+    *sIndex = 1; // Start index for Soundex code
+}
+
+// Process character at a specific index
+static void processCharacterAtIndex(const char *name, char *soundex, int *sIndex, int cIndex) {
+    processCharacter(name[cIndex], soundex, sIndex);
+}
+
+// Process all characters in the name
+static void processCharacters(const char *name, char *soundex, int *sIndex) {
+    for (int cIndex = 1; cIndex < SOUND_EX_LENGTH && name[cIndex]; cIndex++) {
+        processCharacterAtIndex(name, soundex, sIndex, cIndex);
+    }
+}
+
 // Process the name to generate the Soundex code
 static void processName(const char *name, char *soundex) {
-    if (soundex == NULL || name == NULL) return; // Handle NULL inputs
-    int sIndex = 1; // Index for the Soundex code
+    validateInputs(name, soundex); // Validate inputs
 
-    // Process characters in the name
-    for (int cIndex = 1; cIndex < SOUND_EX_LENGTH && name[cIndex]; cIndex++) {
-        processCharacter(name[cIndex], soundex, &sIndex);
-    }
+    int sIndex;
+    initializeIndex(&sIndex); // Initialize Soundex index
+
+    processCharacters(name, soundex, &sIndex); // Process all characters
 }
 
 // Handle NULL inputs for generateSoundex
