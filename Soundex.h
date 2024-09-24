@@ -34,6 +34,9 @@ static void processCharacter(char c, char *soundex, int *sIndex);
 static void iterateCharacters(const char *name, char *soundex);
 static void processNameCharacters(const char *name, char *soundex);
 static void handleNullInputs(const char *name, char *soundex);
+static void checkForNullInputs(const char *name, char *soundex);
+static int checkForEmptyName(const char *name, char *soundex);
+static void mainSoundexGeneration(const char *name, char *soundex);
 static void generateSoundex(const char *name, char *soundex);
 
 // Get the Soundex digit for a character
@@ -88,26 +91,39 @@ static void processNameCharacters(const char *name, char *soundex) {
 }
 
 // Handle NULL inputs for generateSoundex
-static void handleNullInputs(const char *name, char *soundex) {
+static void checkForNullInputs(const char *name, char *soundex) {
     if (soundex != NULL) {
         strcpy(soundex, "0000"); // Set default value if name is NULL
     }
 }
 
+// Check if the name is empty
+static int checkForEmptyName(const char *name, char *soundex) {
+    if (name[0] == '\0') {
+        strcpy(soundex, "0000"); // Set to default Soundex code
+        return 1; // Indicates the name was empty
+    }
+    return 0; // Name is not empty
+}
+
+// Main Soundex generation logic
+static void mainSoundexGeneration(const char *name, char *soundex) {
+    initializeSoundex(soundex, name[0]); // Initialize the Soundex with the first character
+    processNameCharacters(name, soundex); // Process the rest of the name
+}
+
 // Generate the Soundex code for a given name
 static void generateSoundex(const char *name, char *soundex) {
     if (name == NULL || soundex == NULL) {
-        handleNullInputs(name, soundex);
+        checkForNullInputs(name, soundex);
         return;
     }
 
-    if (name[0] == '\0') { // Check for empty string
-        strcpy(soundex, "0000"); // Set to default Soundex code
-        return;
+    if (checkForEmptyName(name, soundex)) {
+        return; // Exit if name was empty
     }
     
-    initializeSoundex(soundex, name[0]); // Initialize the Soundex with the first character
-    processNameCharacters(name, soundex); // Process the rest of the name to complete the Soundex code
+    mainSoundexGeneration(name, soundex); // Generate the Soundex code
 }
 
 #endif // SOUNDEX_H
