@@ -1,0 +1,14 @@
+Test Case ID,Test Case Name,Test Case Description,Input,Expected Output,Status
+TC01,Basic Name Test,"Check how the name ""Robert"" is turned into a special code. This helps us see if the program works for common names.",Robert,R163,Not Tested
+TC02,Similar Names Test,"Test the name ""Rupert,"" which sounds a lot like ""Robert,"" to see if they both get the same code. This checks if similar names are treated the same.",Rupert,R163,Not Tested
+TC03,Different Starting Letter Test,"Use the name ""William"" to see if it gets a different code since it starts with a different letter. This shows how the program handles different names.",William,W451,Not Tested
+TC04,Vowel Handling Test,"Try the name ""Avery,"" which has some letters that are vowels. We want to see how the program treats these letters in the code.",Avery,A160,Not Tested
+TC05,Case Sensitivity Test,"Verify that the program generates the same Soundex code for both uppercase ""Robert"" and lowercase ""robert,"" checking if it correctly ignores case differences.",robert,R163,Not Tested
+TC06,Single Character Test,"Test with just the letter ""A"" to see what code it gives. This checks if the program can handle very short names.",A,A000,Not Tested
+TC07,Empty Input Test,Use an empty string (no letters at all) to see what the program does. We want to check if it gives a default code when there is nothing to work with.,,0,Not Tested
+TC08,NULL Input Test,Test what happens when we give the program nothing (NULL). We want to see if it can handle this without crashing.,NULL,0,Not Tested
+TC09,Non-Alphabetic Characters Test,"Try the name ""J@ne!"" which has some funny characters like ""@"" and ""!"". This checks how the program deals with names that are not just letters.",J@ne!,J500,Not Tested
+TC10,Hyphenated Name Test,"Use the name ""Smith-Jones,"" which has a dash in it, to see if the program can handle names with special characters like hyphens.",Smith-Jones,S535,Not Tested
+TC11,Repeated Letters Test,"Test with the name ""Samantha,"" which has the letter ""A"" twice. We want to see if the program can avoid adding the same code twice.",Samantha,S530,Not Tested
+TC12,Sequential Vowels Test,"Check the name ""Eddie,"" which has two vowels next to each other, to see how the program processes those letters in the code.",Eddie,E300,Not Tested
+TC13,Long Name Test,"Try the longer name ""Christopher"" to see if the program can handle longer names and still give the right code.",Christopher,C632,Not Tested
