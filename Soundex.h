@@ -31,12 +31,8 @@ static void initializeSoundex(char *soundex, char firstChar);
 static int canAddCodeToSoundex(char code, const char *soundex, int sIndex);
 static void addCodeToSoundex(char *soundex, char code, int *sIndex);
 static void processCharacter(char c, char *soundex, int *sIndex);
-static void iterateCharacters(const char *name, char *soundex);
-static void processNameCharacters(const char *name, char *soundex);
+static void processName(const char *name, char *soundex);
 static void handleNullInputs(const char *name, char *soundex);
-static int checkForEmptyName(const char *name, char *soundex);
-static void mainSoundexGeneration(const char *name, char *soundex);
-static int validateInputs(const char *name, char *soundex);
 static void generateSoundex(const char *name, char *soundex);
 
 // Get the Soundex digit for a character
@@ -76,18 +72,13 @@ static void processCharacter(char c, char *soundex, int *sIndex) {
     addCodeToSoundex(soundex, code, sIndex);
 }
 
-// Iterate over the characters of the name and process them
-static void iterateCharacters(const char *name, char *soundex) {
+// Process the name to generate the Soundex code
+static void processName(const char *name, char *soundex) {
+    if (name == NULL || soundex == NULL) return; // Handle NULL inputs
     int sIndex = 1; // Index for the Soundex code
     for (int cIndex = 1; name[cIndex] && sIndex < SOUND_EX_LENGTH; cIndex++) {
         processCharacter(name[cIndex], soundex, &sIndex);
     }
-}
-
-// Process the name to generate the Soundex code
-static void processNameCharacters(const char *name, char *soundex) {
-    if (name == NULL || soundex == NULL) return; // Handle NULL inputs
-    iterateCharacters(name, soundex); // Iterate and process characters
 }
 
 // Handle NULL inputs for generateSoundex
@@ -97,41 +88,15 @@ static void handleNullInputs(const char *name, char *soundex) {
     }
 }
 
-// Check if the name is empty
-static int checkForEmptyName(const char *name, char *soundex) {
-    if (name[0] == '\0') {
-        strcpy(soundex, "0000"); // Set to default Soundex code
-        return 1; // Indicates the name was empty
-    }
-    return 0; // Name is not empty
-}
-
-// Validate inputs
-static int validateInputs(const char *name, char *soundex) {
-    if (name == NULL || soundex == NULL) {
-        handleNullInputs(name, soundex);
-        return 1; // Indicates invalid inputs
-    }
-    return 0; // Inputs are valid
-}
-
-// Main Soundex generation logic
-static void mainSoundexGeneration(const char *name, char *soundex) {
-    initializeSoundex(soundex, name[0]); // Initialize the Soundex with the first character
-    processNameCharacters(name, soundex); // Process the rest of the name
-}
-
 // Generate the Soundex code for a given name
 static void generateSoundex(const char *name, char *soundex) {
-    if (validateInputs(name, soundex)) {
-        return; // Exit if inputs are invalid
+    if (name == NULL || soundex == NULL) {
+        handleNullInputs(name, soundex);
+        return;
     }
 
-    if (checkForEmptyName(name, soundex)) {
-        return; // Exit if name was empty
-    }
-    
-    mainSoundexGeneration(name, soundex); // Generate the Soundex code
+    initializeSoundex(soundex, name[0]); // Initialize the Soundex with the first character
+    processName(name, soundex); // Process the rest of the name to complete the Soundex code
 }
 
 #endif // SOUNDEX_H
