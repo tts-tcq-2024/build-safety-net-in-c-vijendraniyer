@@ -31,8 +31,9 @@ static void initializeSoundex(char *soundex, char firstChar);
 static int canAddCodeToSoundex(char code, const char *soundex, int sIndex);
 static void addCodeToSoundex(char *soundex, char code, int *sIndex);
 static void processCharacter(char c, char *soundex, int *sIndex);
+static void processSingleCharacter(char c, char *soundex, int *sIndex);
 static void processName(const char *name, char *soundex);
-static void handleNullInputs(const char *name, char *soundex);
+static void handleNullInputs(char *soundex);
 static void generateSoundex(const char *name, char *soundex);
 
 // Get the Soundex digit for a character
@@ -72,27 +73,38 @@ static void processCharacter(char c, char *soundex, int *sIndex) {
     addCodeToSoundex(soundex, code, sIndex);
 }
 
+// Helper function to process a single character
+static void processSingleCharacter(char c, char *soundex, int *sIndex) {
+    processCharacter(c, soundex, sIndex);
+}
+
 // Process the name to generate the Soundex code
 static void processName(const char *name, char *soundex) {
-    if (name == NULL || soundex == NULL) return; // Handle NULL inputs
+    if (soundex == NULL || name == NULL) return; // Handle NULL inputs
     int sIndex = 1; // Index for the Soundex code
+
+    // Process characters in the name
     for (int cIndex = 1; name[cIndex] && sIndex < SOUND_EX_LENGTH; cIndex++) {
-        processCharacter(name[cIndex], soundex, &sIndex);
+        processSingleCharacter(name[cIndex], soundex, &sIndex);
     }
 }
 
 // Handle NULL inputs for generateSoundex
-static void handleNullInputs(const char *name, char *soundex) {
+static void handleNullInputs(char *soundex) {
     if (soundex != NULL) {
-        strcpy(soundex, "0000"); // Set default value if name is NULL
+        strcpy(soundex, "0000"); // Set default value if soundex is NULL
     }
 }
 
 // Generate the Soundex code for a given name
 static void generateSoundex(const char *name, char *soundex) {
-    if (name == NULL || soundex == NULL) {
-        handleNullInputs(name, soundex);
-        return;
+    if (name == NULL) {
+        handleNullInputs(soundex);
+        return; // Exit if name is NULL
+    }
+
+    if (soundex == NULL) {
+        return; // Exit if soundex is NULL
     }
 
     initializeSoundex(soundex, name[0]); // Initialize the Soundex with the first character
