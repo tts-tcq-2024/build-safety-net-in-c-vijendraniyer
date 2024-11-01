@@ -62,7 +62,7 @@ static void processNameCharacters(const char *name, char *soundex, int *sIndex) 
 }
 
 static void generateSoundex(const char *name, char *soundex) {
-    if (!name || !soundex) {
+    if (!name || !soundex || name[0] == '\0') { // Handle NULL or empty input
         strcpy(soundex, "0000");
         return;
     }
@@ -72,3 +72,4 @@ static void generateSoundex(const char *name, char *soundex) {
     processNameCharacters(name, soundex, &sIndex);
     addPadding(soundex, &sIndex);
 }
+
