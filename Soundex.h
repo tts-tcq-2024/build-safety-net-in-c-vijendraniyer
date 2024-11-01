@@ -80,8 +80,10 @@ static void generateSoundex(const char *name, char *soundex) {
         return;
     }
 
-    initializeSoundex(soundex, name[0]);
-    int sIndex = 1;
-    processNameCharacters(name, soundex, &sIndex);
-    addPadding(soundex, &sIndex);
+    if (soundex) { // Ensure soundex is not NULL before proceeding
+        initializeSoundex(soundex, name[0]);
+        int sIndex = 1;
+        processNameCharacters(name, soundex, &sIndex);
+        addPadding(soundex, &sIndex);
+    }
 }
