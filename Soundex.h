@@ -42,46 +42,38 @@ static void addPadding(char *soundex, int *sIndex) {
     soundex[SOUND_EX_LENGTH] = '\0';
 }
 
-static void processSingleCharacter(char c, char *soundex, int *sIndex) {
-    char code = getSoundexCodeForCharacter(c);
-
-    // Early return if the code is '0' or if we reached Soundex length
-    if (code == '0' || *sIndex >= SOUND_EX_LENGTH) {
-        return;
-    }
-
+static void handleCharacterCode(char code, char *soundex, int *sIndex) {
     // Check if the last added code is the same as the current one
-    if (soundex[*sIndex - 1] != code) {
+    if (code != '0' && *sIndex < SOUND_EX_LENGTH && soundex[*sIndex - 1] != code) {
         soundex[(*sIndex)++] = code;
     }
 }
 
-static void processNameCharacters(const char *name, char *soundex, int *sIndex) {
-    for (int i = 1; name[i] != '\0' && *sIndex < SOUND_EX_LENGTH; i++) {
-        processSingleCharacter(name[i], soundex, sIndex);
-    }
+static void processSingleCharacter(char c, char *soundex, int *sIndex) {
+    char code = getSoundexCodeForCharacter(c);
+    handleCharacterCode(code, soundex, sIndex);
 }
 
 static int isInputInvalid(const char *name, char *soundex) {
-    return !name || !soundex || name[0] == '\0';
+    return !name || !soundex || name[0] == '\0' || !isalpha(name[0]);
+}
+
+static void handleInvalidInput(char *soundex) {
+    if (soundex) { // Only copy if soundex is not NULL
+        strcpy(soundex, "0000");
+    }
 }
 
 static void generateSoundex(const char *name, char *soundex) {
     if (isInputInvalid(name, soundex)) {
-        if (soundex) { // Only copy if soundex is not NULL
-            strcpy(soundex, "0000");
-        }
-        return;
-    }
-
-    // Check if the first character is alphabetic
-    if (!isalpha(name[0])) {
-        strcpy(soundex, "0000");
+        handleInvalidInput(soundex);
         return;
     }
 
     initializeSoundex(soundex, name[0]);
     int sIndex = 1;
-    processNameCharacters(name, soundex, &sIndex);
+    for (int i = 1; name[i] != '\0' && sIndex < SOUND_EX_LENGTH; i++) {
+        processSingleCharacter(name[i], soundex, &sIndex);
+    }
     addPadding(soundex, &sIndex);
 }
