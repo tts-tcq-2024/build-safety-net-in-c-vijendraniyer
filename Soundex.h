@@ -67,7 +67,9 @@ static int isInputInvalid(const char *name, char *soundex) {
 
 static void generateSoundex(const char *name, char *soundex) {
     if (isInputInvalid(name, soundex)) {
-        strcpy(soundex, "0000");
+        if (soundex) { // Only copy if soundex is not NULL
+            strcpy(soundex, "0000");
+        }
         return;
     }
 
@@ -76,3 +78,4 @@ static void generateSoundex(const char *name, char *soundex) {
     processNameCharacters(name, soundex, &sIndex);
     addPadding(soundex, &sIndex);
 }
+
