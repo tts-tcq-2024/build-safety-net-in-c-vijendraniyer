@@ -30,16 +30,20 @@ static char getSoundexCodeForCharacter(char c) {
 }
 
 static void initializeSoundex(char *soundex, char firstChar) {
-    soundex[0] = toupper(firstChar);
-    memset(soundex + 1, '0', SOUND_EX_LENGTH - 1);
-    soundex[SOUND_EX_LENGTH] = '\0';
+    if (soundex) { // Check if soundex is not NULL
+        soundex[0] = toupper(firstChar);
+        memset(soundex + 1, '0', SOUND_EX_LENGTH - 1);
+        soundex[SOUND_EX_LENGTH] = '\0';
+    }
 }
 
 static void addPadding(char *soundex, int *sIndex) {
-    while (*sIndex < SOUND_EX_LENGTH) {
-        soundex[(*sIndex)++] = '0';
+    if (soundex) { // Check if soundex is not NULL
+        while (*sIndex < SOUND_EX_LENGTH) {
+            soundex[(*sIndex)++] = '0';
+        }
+        soundex[SOUND_EX_LENGTH] = '\0';
     }
-    soundex[SOUND_EX_LENGTH] = '\0';
 }
 
 static int canAddCode(char code, char *soundex, int *sIndex) {
@@ -58,9 +62,10 @@ static int isInputInvalid(const char *name) {
 }
 
 static void handleInvalidInput(char *soundex) {
-    if (soundex) { // Only copy if soundex is not NULL
-        strcpy(soundex, "0000");
-    }
+    // If soundex is NULL, do nothing
+    if (!soundex) return;
+
+    strcpy(soundex, "0000");
 }
 
 static void processNameCharacters(const char *name, char *soundex, int *sIndex) {
