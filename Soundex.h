@@ -35,10 +35,6 @@ static void initializeSoundex(char *soundex, char firstChar) {
     soundex[SOUND_EX_LENGTH] = '\0';
 }
 
-static int canAddCode(char code, char prevCode, int sIndex) {
-    return code != '0' && code != prevCode && sIndex < SOUND_EX_LENGTH;
-}
-
 static void addPadding(char *soundex, int *sIndex) {
     while (*sIndex < SOUND_EX_LENGTH) {
         soundex[(*sIndex)++] = '0';
@@ -46,18 +42,23 @@ static void addPadding(char *soundex, int *sIndex) {
     soundex[SOUND_EX_LENGTH] = '\0';
 }
 
-static void processSingleCharacter(char c, char *soundex, int *sIndex, char *prevCode) {
+static void processSingleCharacter(char c, char *soundex, int *sIndex) {
     char code = getSoundexCodeForCharacter(c);
-    if (canAddCode(code, *prevCode, *sIndex)) {
+
+    // Early return if the code is '0' or if we reached Soundex length
+    if (code == '0' || *sIndex >= SOUND_EX_LENGTH) {
+        return;
+    }
+
+    // Check if the last added code is the same as the current one
+    if (soundex[*sIndex - 1] != code) {
         soundex[(*sIndex)++] = code;
     }
-    *prevCode = code;
 }
 
 static void processNameCharacters(const char *name, char *soundex, int *sIndex) {
-    char prevCode = '0';
     for (int i = 1; name[i] != '\0' && *sIndex < SOUND_EX_LENGTH; i++) {
-        processSingleCharacter(name[i], soundex, sIndex, &prevCode);
+        processSingleCharacter(name[i], soundex, sIndex);
     }
 }
 
