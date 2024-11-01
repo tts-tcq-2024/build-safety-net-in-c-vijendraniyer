@@ -47,7 +47,7 @@ TEST(SoundexTestsuite, GeneratesSoundexForNonAlphabeticCharacters) {
 TEST(SoundexTestsuite, GeneratesSoundexForLongName) {
     char soundex[5];
     generateSoundex("Alexander", soundex);
-    ASSERT_STREQ(soundex, "A452"); // Expected Soundex code for "Alexander"
+    ASSERT_STREQ(soundex, "A425"); // Expected Soundex code for "Alexander"
 }
 
 // Test case for handling NULL input for Soundex array
