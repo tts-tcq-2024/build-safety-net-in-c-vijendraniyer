@@ -26,7 +26,7 @@ static char getSoundexCodeForCharacter(char c) {
             return soundexTable[i].code;
         }
     }
-    return '0';
+    return '0'; // Return '0' for characters not in the mapping
 }
 
 static void initializeSoundex(char *soundex, char firstChar) {
@@ -73,9 +73,14 @@ static void generateSoundex(const char *name, char *soundex) {
         return;
     }
 
+    // Check if the first character is alphabetic
+    if (!isalpha(name[0])) {
+        strcpy(soundex, "0000");
+        return;
+    }
+
     initializeSoundex(soundex, name[0]);
     int sIndex = 1;
     processNameCharacters(name, soundex, &sIndex);
     addPadding(soundex, &sIndex);
 }
-
